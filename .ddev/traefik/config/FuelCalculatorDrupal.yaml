@@ -1,0 +1,131 @@
+#ddev-generated
+# If you remove the ddev-generated line above you
+# are responsible for maintaining this file. DDEV will not then
+# update it, for example if you add `additional_hostnames`, etc.
+
+http:
+  routers:
+    FuelCalculatorDrupal-xhgui-80-http:
+      entrypoints:
+        - http-8143
+      rule: HostRegexp(`^fuelcalculatordrupal\.ddev\.site$`)
+      
+      service: "FuelCalculatorDrupal-xhgui-80"
+      ruleSyntax: v3
+      tls: false
+      # middlewares:
+      #   - "FuelCalculatorDrupal-redirectHttps"
+    FuelCalculatorDrupal-phpmyadmin-80-http:
+      entrypoints:
+        - http-8036
+      rule: HostRegexp(`^fuelcalculatordrupal\.ddev\.site$`)
+      
+      service: "FuelCalculatorDrupal-phpmyadmin-80"
+      ruleSyntax: v3
+      tls: false
+      # middlewares:
+      #   - "FuelCalculatorDrupal-redirectHttps"
+    FuelCalculatorDrupal-web-80-http:
+      entrypoints:
+        - http-33001
+      rule: HostRegexp(`^fuelcalculatordrupal\.ddev\.site$`)
+      
+      service: "FuelCalculatorDrupal-web-80"
+      ruleSyntax: v3
+      tls: false
+      # middlewares:
+      #   - "FuelCalculatorDrupal-redirectHttps"
+    FuelCalculatorDrupal-web-8025-http:
+      entrypoints:
+        - http-8025
+      rule: HostRegexp(`^fuelcalculatordrupal\.ddev\.site$`)
+      
+      service: "FuelCalculatorDrupal-web-8025"
+      ruleSyntax: v3
+      tls: false
+      # middlewares:
+      #   - "FuelCalculatorDrupal-redirectHttps"
+    
+    
+    FuelCalculatorDrupal-xhgui-80-https:
+      entrypoints:
+        - http-8142
+      rule: HostRegexp(`^fuelcalculatordrupal\.ddev\.site$`)
+      
+      service: "FuelCalculatorDrupal-xhgui-80"
+      ruleSyntax: v3
+      
+      tls: true
+      
+    
+    FuelCalculatorDrupal-phpmyadmin-80-https:
+      entrypoints:
+        - http-8037
+      rule: HostRegexp(`^fuelcalculatordrupal\.ddev\.site$`)
+      
+      service: "FuelCalculatorDrupal-phpmyadmin-80"
+      ruleSyntax: v3
+      
+      tls: true
+      
+    
+    
+    FuelCalculatorDrupal-web-80-https:
+      entrypoints:
+        - http-443
+      rule: HostRegexp(`^fuelcalculatordrupal\.ddev\.site$`)
+      
+      service: "FuelCalculatorDrupal-web-80"
+      ruleSyntax: v3
+      
+      tls: true
+      
+    FuelCalculatorDrupal-web-8025-https:
+      entrypoints:
+        - http-8026
+      rule: HostRegexp(`^fuelcalculatordrupal\.ddev\.site$`)
+      
+      service: "FuelCalculatorDrupal-web-8025"
+      ruleSyntax: v3
+      
+      tls: true
+      
+    
+
+  middlewares:
+    FuelCalculatorDrupal-redirectHttps:
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+  services:
+    FuelCalculatorDrupal-xhgui-80:
+      loadbalancer:
+        servers:
+          - url: http://ddev-FuelCalculatorDrupal-xhgui:80
+        
+    
+    FuelCalculatorDrupal-phpmyadmin-80:
+      loadbalancer:
+        servers:
+          - url: http://ddev-FuelCalculatorDrupal-phpmyadmin:80
+        
+    
+    FuelCalculatorDrupal-web-80:
+      loadbalancer:
+        servers:
+          - url: http://ddev-FuelCalculatorDrupal-web:80
+        
+    FuelCalculatorDrupal-web-8025:
+      loadbalancer:
+        servers:
+          - url: http://ddev-FuelCalculatorDrupal-web:8025
+        
+    
+    
+    
+
+tls:
+  certificates:
+    - certFile: /mnt/ddev-global-cache/traefik/certs/FuelCalculatorDrupal.crt
+      keyFile: /mnt/ddev-global-cache/traefik/certs/FuelCalculatorDrupal.key

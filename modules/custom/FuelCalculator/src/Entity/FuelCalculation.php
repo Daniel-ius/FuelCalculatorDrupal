@@ -2,6 +2,7 @@
 
 namespace Drupal\fuel_calculator\Entity;
 
+use Drupal;
 use Drupal\Core\Entity\Attribute\ContentEntityType;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityTypeInterface;
@@ -38,7 +39,7 @@ class FuelCalculation extends ContentEntityBase implements ContentEntityInterfac
     /**
      * {@inheritdoc}
      */
-    public static function baseFieldDefinitions(EntityTypeInterface $entity_type)
+    public static function baseFieldDefinitions(EntityTypeInterface $entity_type): array
     {
         $fields = parent::baseFieldDefinitions($entity_type);
 
@@ -126,9 +127,9 @@ class FuelCalculation extends ContentEntityBase implements ContentEntityInterfac
      * @return array
      *   An array of default values.
      */
-    public static function getCurrentUserId()
+    public static function getCurrentUserId(): array
     {
-        return [\Drupal::currentUser()->id()];
+        return [Drupal::currentUser()->id()];
     }
 
     /**
@@ -136,7 +137,7 @@ class FuelCalculation extends ContentEntityBase implements ContentEntityInterfac
      * @return float
      *   The distance value.
      */
-    public function getDistance()
+    public function getDistance(): float
     {
         return $this->get('distance')->value;
     }
@@ -146,7 +147,7 @@ class FuelCalculation extends ContentEntityBase implements ContentEntityInterfac
      * @return float
      *   The efficiency value.
      */
-    public function getEfficiency()
+    public function getEfficiency(): float
     {
         return $this->get('efficiency')->value;
     }
@@ -156,7 +157,7 @@ class FuelCalculation extends ContentEntityBase implements ContentEntityInterfac
      * @return float
      *   The price value.
      */
-    public function getPrice()
+    public function getPrice(): float
     {
         return $this->get('price')->value;
     }
@@ -166,7 +167,7 @@ class FuelCalculation extends ContentEntityBase implements ContentEntityInterfac
      * @return float
      *   The fuel spent value.
      */
-    public function getFuelSpent()
+    public function getFuelSpent(): float
     {
         return $this->get('fuel_spent')->value;
     }
@@ -176,7 +177,7 @@ class FuelCalculation extends ContentEntityBase implements ContentEntityInterfac
      * @return float
      *   The fuel cost value.
      */
-    public function getFuelCost()
+    public function getFuelCost(): float
     {
         return $this->get('fuel_cost')->value;
     }
@@ -186,7 +187,7 @@ class FuelCalculation extends ContentEntityBase implements ContentEntityInterfac
      * @return string
      *   The IP address.
      */
-    public function getIpAddress()
+    public function getIpAddress(): string
     {
         return $this->get('ip_address')->value;
     }
@@ -196,7 +197,7 @@ class FuelCalculation extends ContentEntityBase implements ContentEntityInterfac
      * @return int
      *   The creation timestamp.
      */
-    public function getCreatedTime()
+    public function getCreatedTime(): int
     {
         return $this->get('created')->value;
     }

@@ -13,9 +13,9 @@ class FuelCalculatorForm extends FormBase
     /**
      * The calculation service.
      *
-     * @var \Drupal\fuel_calculator\Service\CalculationService
+     * @var CalculationService
      */
-    protected $calculator;
+    protected CalculationService $calculator;
 
     /**
      * Constructs a new FuelCalculatorForm object.
@@ -36,7 +36,7 @@ class FuelCalculatorForm extends FormBase
     /**
      * {@inheritdoc}
      */
-    public function getFormId()
+    public function getFormId(): string
     {
         return 'fuel_calculator_form';
     }
@@ -44,7 +44,7 @@ class FuelCalculatorForm extends FormBase
     /**
      * {@inheritdoc}
      */
-    public function buildForm(array $form, FormStateInterface $form_state, Request $request = null)
+    public function buildForm(array $form, FormStateInterface $form_state, Request $request = null): array
     {
         $config = $this->config('fuel_calculator.settings');
         $request = $request ?: \Drupal::request();
@@ -131,7 +131,7 @@ class FuelCalculatorForm extends FormBase
     /**
      * {@inheritdoc}
      */
-    public function validateForm(array &$form, FormStateInterface $form_state)
+    public function validateForm(array &$form, FormStateInterface $form_state): void
     {
         $distance = $form_state->getValue('distance');
         $efficiency = $form_state->getValue('efficiency');
@@ -151,7 +151,7 @@ class FuelCalculatorForm extends FormBase
     /**
      * {@inheritdoc}
      */
-    public function submitForm(array &$form, FormStateInterface $form_state)
+    public function submitForm(array &$form, FormStateInterface $form_state): void
     {
         $distance = $form_state->getValue('distance');
         $efficiency = $form_state->getValue('efficiency');
@@ -162,7 +162,7 @@ class FuelCalculatorForm extends FormBase
         $form_state->setRebuild();
     }
 
-    public function ajaxCallback(array &$form, FormStateInterface $form_state)
+    public function ajaxCallback(array &$form, FormStateInterface $form_state): array
     {
         if (empty($form)) {
             $form_builder = \Drupal::formBuilder();
@@ -175,7 +175,7 @@ class FuelCalculatorForm extends FormBase
     /**
      * Reset form handler.
      */
-    public function resetForm(array &$form, FormStateInterface $form_state)
+    public function resetForm(array &$form, FormStateInterface $form_state): void
     {
         $config = $this->config('fuel_calculator.settings');
 

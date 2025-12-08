@@ -12,6 +12,7 @@ namespace Drupal\fuel_calculator\Service;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Session\AccountProxyInterface;
+use Exception;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
@@ -25,21 +26,21 @@ class CalculationService
      *
      * @var LoggerChannelFactoryInterface
      */
-    protected $logger;
+    protected LoggerChannelFactoryInterface $logger;
 
     /**
      * The current user.
      *
      * @var AccountProxyInterface
      */
-    protected $currentUser;
+    protected AccountProxyInterface $currentUser;
 
     /**
      * The request stack.
      *
      * @var RequestStack
      */
-    protected $requestStack;
+    protected RequestStack $requestStack;
 
 
     /**
@@ -47,7 +48,7 @@ class CalculationService
      *
      * @var EntityTypeManagerInterface
      */
-    protected $entityTypeManager;
+    protected EntityTypeManagerInterface $entityTypeManager;
 
     /**
      * EntityTypeManagerInterface $entity_type_manager
@@ -95,7 +96,7 @@ class CalculationService
         float $distance,
         float $efficiency,
         float $price
-    ) {
+    ): array {
         $spent = $distance * $efficiency / 100;
         $cost = $spent * $price;
 
@@ -132,7 +133,7 @@ class CalculationService
                     ]
             );
             $calculation->save();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error(
                 'Failed to save fuel calculation: @error',
                 ['@error' => $e->getMessage()]

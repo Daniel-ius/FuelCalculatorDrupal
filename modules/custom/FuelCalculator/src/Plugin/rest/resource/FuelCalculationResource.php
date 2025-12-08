@@ -2,7 +2,9 @@
 
 namespace Drupal\fuel_calculator\Plugin\rest\resource;
 
-use Drupal\rest\Attribute\RestResource;
+use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
+use Drupal\Component\Plugin\Exception\PluginNotFoundException;
+use Drupal\Core\Entity\EntityStorageException;
 use Drupal\rest\Plugin\ResourceBase;
 use Drupal\rest\ResourceResponse;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -26,8 +28,8 @@ use Psr\Log\LoggerInterface;
  */
 class FuelCalculationResource extends ResourceBase
 {
-    protected $entityTypeManager;
-    protected $currentUser;
+    protected EntityTypeManagerInterface $entityTypeManager;
+    protected AccountProxyInterface $currentUser;
 
     public function __construct(
         array $configuration,
@@ -43,7 +45,7 @@ class FuelCalculationResource extends ResourceBase
         $this->currentUser = $current_user;
     }
 
-    public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition)
+    public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition): ResourceBase|FuelCalculationResource|static
     {
         return new static(
             $configuration,
@@ -56,7 +58,11 @@ class FuelCalculationResource extends ResourceBase
         );
     }
 
-    public function get($id = null)
+  /**
+   * @throws InvalidPluginDefinitionException
+   * @throws PluginNotFoundException
+   */
+    public function get($id = null): ResourceResponse
     {
         if (!$this->currentUser->hasPermission('access fuel calculator api')) {
             throw new BadRequestHttpException('Access denied');
@@ -79,7 +85,12 @@ class FuelCalculationResource extends ResourceBase
         return new ResourceResponse($data);
     }
 
-    public function post(array $data)
+  /**
+   * @throws EntityStorageException
+   * @throws InvalidPluginDefinitionException
+   * @throws PluginNotFoundException
+   */
+    public function post(array $data): ResourceResponse
     {
         if (!$this->currentUser->hasPermission('access fuel calculator api')) {
             throw new BadRequestHttpException('Access denied');
@@ -116,7 +127,12 @@ class FuelCalculationResource extends ResourceBase
         return new ResourceResponse($this->serialize($calc), 201);
     }
 
-    public function patch($id, array $data)
+  /**
+   * @throws EntityStorageException
+   * @throws InvalidPluginDefinitionException
+   * @throws PluginNotFoundException
+   */
+    public function patch($id, array $data): ResourceResponse
     {
         if (!$this->currentUser->hasPermission('access fuel calculator api')) {
             throw new BadRequestHttpException('Access denied');
@@ -151,7 +167,12 @@ class FuelCalculationResource extends ResourceBase
         return new ResourceResponse($this->serialize($calc));
     }
 
-    public function delete($id)
+  /**
+   * @throws EntityStorageException
+   * @throws InvalidPluginDefinitionException
+   * @throws PluginNotFoundException
+   */
+    public function delete($id): ResourceResponse
     {
         if (!$this->currentUser->hasPermission('access fuel calculator api')) {
             throw new BadRequestHttpException('Access denied');
@@ -166,7 +187,7 @@ class FuelCalculationResource extends ResourceBase
         return new ResourceResponse(['message' => 'Deleted']);
     }
 
-    private function serialize($calc)
+    private function serialize($calc): array
     {
         return [
         'id' => (int) $calc->id(),

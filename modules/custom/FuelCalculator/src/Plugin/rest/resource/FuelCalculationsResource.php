@@ -3,12 +3,13 @@
 namespace Drupal\fuel_calculator\Plugin\rest\resource;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\rest\Plugin\ResourceBase;
 use Drupal\rest\ResourceResponse;
+use Exception;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -29,16 +30,16 @@ class FuelCalculationsResource extends ResourceBase
   /**
    * The entity type manager.
    *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   * @var EntityTypeManagerInterface
    */
-    protected $entityTypeManager;
+    protected EntityTypeManagerInterface $entityTypeManager;
 
   /**
    * The current user.
    *
-   * @var \Drupal\Core\Session\AccountProxyInterface
+   * @var AccountProxyInterface
    */
-    protected $currentUser;
+    protected AccountProxyInterface $currentUser;
 
   /**
    * Constructs a FuelCalculationsResource object.
@@ -51,11 +52,11 @@ class FuelCalculationsResource extends ResourceBase
    *   The plugin implementation definition.
    * @param array $serializer_formats
    *   The available serialization formats.
-   * @param \Psr\Log\LoggerInterface $logger
+   * @param LoggerInterface $logger
    *   A logger instance.
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   * @param EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
-   * @param \Drupal\Core\Session\AccountProxyInterface $current_user
+   * @param AccountProxyInterface $current_user
    *   The current user.
    */
     public function __construct(
@@ -75,7 +76,7 @@ class FuelCalculationsResource extends ResourceBase
   /**
    * {@inheritdoc}
    */
-    public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition)
+    public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition): FuelCalculationsResource|ResourceBase|ContainerFactoryPluginInterface|static
     {
         return new static(
             $configuration,
@@ -91,10 +92,10 @@ class FuelCalculationsResource extends ResourceBase
   /**
    * Responds to GET requests.
    *
-   * @return \Drupal\rest\ResourceResponse
+   * @return ResourceResponse
    *   The response containing fuel calculations.
    */
-    public function get()
+    public function get(): ResourceResponse
     {
         if (!$this->currentUser->hasPermission('access fuel calculator api')) {
             throw new BadRequestHttpException('You do not have permission to access this resource.');
@@ -121,7 +122,7 @@ class FuelCalculationsResource extends ResourceBase
             }
 
             return new ResourceResponse($data);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Error fetching fuel calculations: @message', ['@message' => $e->getMessage()]);
             throw new BadRequestHttpException('Error fetching fuel calculations.');
         }
@@ -133,10 +134,10 @@ class FuelCalculationsResource extends ResourceBase
    * @param array $data
    *   The request payload.
    *
-   * @return \Drupal\rest\ResourceResponse
+   * @return ResourceResponse
    *   The created fuel calculation response.
    */
-    public function post(array $data)
+    public function post(array $data): ResourceResponse
     {
         if (!$this->currentUser->hasPermission('create fuel calculation entities')) {
             throw new BadRequestHttpException('You do not have permission to create fuel calculations.');
@@ -145,7 +146,7 @@ class FuelCalculationsResource extends ResourceBase
         $required_fields = ['distance', 'efficiency', 'price'];
         foreach ($required_fields as $field) {
             if (!isset($data[$field])) {
-                throw new BadRequestHttpException("Missing required field: {$field}");
+                throw new BadRequestHttpException("Missing required field: $field");
             }
         }
 
@@ -188,7 +189,7 @@ class FuelCalculationsResource extends ResourceBase
             ];
 
             return new ResourceResponse($response_data, 201);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Error creating fuel calculation: @message', ['@message' => $e->getMessage()]);
             throw new BadRequestHttpException('Error creating fuel calculation: ' . $e->getMessage());
         }

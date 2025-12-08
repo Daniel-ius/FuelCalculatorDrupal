@@ -5,7 +5,7 @@ services:
       context: /home/danielius/FuelCalculatorDrupal/.ddev/.dbimageBuild
       dockerfile: Dockerfile
       args:
-        BASE_IMAGE: ddev/ddev-dbserver-mariadb-10.11:v1.24.8
+        BASE_IMAGE: ddev/ddev-dbserver-mariadb-10.11:v1.24.10
         gid: "1000"
         uid: "1000"
         username: danielius
@@ -15,7 +15,7 @@ services:
     container_name: ddev-FuelCalculatorDrupal-db
     environment:
       BITNAMI_VOLUME_DIR: ""
-      COLUMNS: "161"
+      COLUMNS: "235"
       DDEV_DATABASE: mariadb:10.11
       DDEV_DATABASE_FAMILY: mysql
       DDEV_GID: "1000"
@@ -28,18 +28,18 @@ services:
       DDEV_PRIMARY_URL_WITHOUT_PORT: https://fuelcalculatordrupal.ddev.site
       DDEV_PROJECT: FuelCalculatorDrupal
       DDEV_PROJECT_TYPE: drupal11
-      DDEV_ROUTER_HTTP_PORT: "33001"
+      DDEV_ROUTER_HTTP_PORT: "33000"
       DDEV_ROUTER_HTTPS_PORT: "443"
       DDEV_SCHEME: https
       DDEV_SITENAME: FuelCalculatorDrupal
       DDEV_TLD: ddev.site
       DDEV_UID: "1000"
       DDEV_USER: danielius
-      DDEV_VERSION: v1.24.8
+      DDEV_VERSION: v1.24.10
       DOCKER_IP: 127.0.0.1
       HOST_DOCKER_INTERNAL_IP: ""
       IS_DDEV_PROJECT: "true"
-      LINES: "13"
+      LINES: "10"
       MYSQL_HISTFILE: /mnt/ddev-global-cache/mysqlhistory/FuelCalculatorDrupal-db/mysql_history
       PGDATABASE: db
       PGHOST: 127.0.0.1
@@ -57,7 +57,7 @@ services:
       retries: 70
       start_period: 2m0s
       start_interval: 1s
-    image: ddev/ddev-dbserver-mariadb-10.11:v1.24.8-FuelCalculatorDrupal-built
+    image: ddev/ddev-dbserver-mariadb-10.11:v1.24.10-FuelCalculatorDrupal-built
     labels:
       com.ddev.app-type: drupal11
       com.ddev.approot: /home/danielius/FuelCalculatorDrupal
@@ -95,6 +95,15 @@ services:
         target: /mnt/ddev-global-cache
         volume: {}
     working_dir: /home/danielius
+  frankenphp:
+    profiles:
+      - frankenphp
+    environment:
+      HOST_DOCKER_INTERNAL_IP: ""
+    image: dunglas/frankenphp:php8.3-bookworm-FuelCalculatorDrupal-built
+    networks:
+      ddev_default: null
+      default: null
   phpmyadmin:
     container_name: ddev-FuelCalculatorDrupal-phpmyadmin
     depends_on:
@@ -141,9 +150,12 @@ services:
       context: /home/danielius/FuelCalculatorDrupal/.ddev/.webimageBuild
       dockerfile: Dockerfile
       args:
-        BASE_IMAGE: ddev/ddev-webserver:v1.24.8
+        BASE_IMAGE: ddev/ddev-webserver:v1.24.10
         DDEV_DATABASE: mariadb:10.11
         DDEV_PHP_VERSION: "8.3"
+        FRANKENPHP_CUSTOM_EXTENSIONS: ""
+        FRANKENPHP_DEBIAN_CODENAME: bookworm
+        FRANKENPHP_DEFAULT_EXTENSIONS: gd pdo_mysql pdo_pgsql xdebug xhprof zip
         gid: "1000"
         uid: "1000"
         username: danielius
@@ -153,7 +165,7 @@ services:
       - /pre-start.sh
     container_name: ddev-FuelCalculatorDrupal-web
     environment:
-      COLUMNS: "161"
+      COLUMNS: "235"
       COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
       COREPACK_HOME: /mnt/ddev-global-cache/corepack
       DDEV_APPROOT: /var/www/html
@@ -174,16 +186,16 @@ services:
       DDEV_PRIMARY_URL_WITHOUT_PORT: https://fuelcalculatordrupal.ddev.site
       DDEV_PROJECT: FuelCalculatorDrupal
       DDEV_PROJECT_TYPE: drupal11
-      DDEV_ROUTER_HTTP_PORT: "33001"
+      DDEV_ROUTER_HTTP_PORT: "33000"
       DDEV_ROUTER_HTTPS_PORT: "443"
       DDEV_SCHEME: https
       DDEV_SITENAME: FuelCalculatorDrupal
       DDEV_TLD: ddev.site
       DDEV_UID: "1000"
       DDEV_USER: danielius
-      DDEV_VERSION: v1.24.8
+      DDEV_VERSION: v1.24.10
       DDEV_WEB_ENTRYPOINT: /mnt/ddev_config/web-entrypoint.d
-      DDEV_WEBSERVER_TYPE: nginx-fpm
+      DDEV_WEBSERVER_TYPE: generic
       DDEV_XDEBUG_ENABLED: "false"
       DDEV_XHPROF_MODE: prepend
       DEPLOY_NAME: local
@@ -191,10 +203,10 @@ services:
       DOCROOT: ""
       DRUSH_OPTIONS_URI: https://fuelcalculatordrupal.ddev.site
       HOST_DOCKER_INTERNAL_IP: ""
-      HTTP_EXPOSE: 33001:80,8025:8025
-      HTTPS_EXPOSE: 443:80,8026:8025
+      HTTP_EXPOSE: 8025:8025,33000:80
+      HTTPS_EXPOSE: 8026:8025,443:80
       IS_DDEV_PROJECT: "true"
-      LINES: "13"
+      LINES: "10"
       MYSQL_HISTFILE: /mnt/ddev-global-cache/mysqlhistory/FuelCalculatorDrupal-web/mysql_history
       NODE_EXTRA_CA_CERTS: /mnt/ddev-global-cache/mkcert/rootCA.pem
       PGDATABASE: db
@@ -202,14 +214,17 @@ services:
       PGPASSWORD: db
       PGUSER: db
       PHP_IDE_CONFIG: serverName=FuelCalculatorDrupal.ddev.site
+      PHP_INI_SCAN_DIR: :/etc/frankenphp/php.d
+      SERVER_NAME: :80
+      SERVER_ROOT: .
       SSH_AUTH_SOCK: /home/.ssh-agent/socket
       START_SCRIPT_TIMEOUT: "57"
       TZ: Europe/Kyiv
       USER: danielius
       VIRTUAL_HOST: fuelcalculatordrupal.ddev.site
       npm_config_cache: /mnt/ddev-global-cache/npm
-    external_links:
-      - ddev-router:fuelcalculatordrupal.ddev.site
+    expose:
+      - "80"
     hostname: FuelCalculatorDrupal-web
     healthcheck:
       timeout: 1m10s
@@ -217,7 +232,7 @@ services:
       retries: 70
       start_period: 2m0s
       start_interval: 1s
-    image: ddev/ddev-webserver:v1.24.8-FuelCalculatorDrupal-built
+    image: ddev/ddev-webserver:v1.24.10-FuelCalculatorDrupal-built
     labels:
       com.ddev.app-type: drupal11
       com.ddev.approot: /home/danielius/FuelCalculatorDrupal
@@ -230,10 +245,6 @@ services:
       - mode: ingress
         host_ip: 127.0.0.1
         target: 80
-        protocol: tcp
-      - mode: ingress
-        host_ip: 127.0.0.1
-        target: 443
         protocol: tcp
       - mode: ingress
         host_ip: 127.0.0.1
@@ -265,6 +276,11 @@ services:
         source: ddev-ssh-agent_socket_dir
         target: /home/.ssh-agent
         volume: {}
+      - type: bind
+        source: /home/danielius/FuelCalculatorDrupal/.ddev/php
+        target: /etc/frankenphp/php.d
+        bind:
+          create_host_path: true
     working_dir: /var/www/html/
   xhgui:
     profiles:
@@ -284,7 +300,7 @@ services:
       XHGUI_PDO_PASS: db
       XHGUI_PDO_USER: db
       XHGUI_SAVE_HANDLER: pdo
-    image: ddev/ddev-xhgui:v1.24.8
+    image: ddev/ddev-xhgui:v1.24.10
     labels:
       com.ddev.approot: /home/danielius/FuelCalculatorDrupal
       com.ddev.site-name: FuelCalculatorDrupal
@@ -292,6 +308,8 @@ services:
       ddev_default: null
       default: null
     restart: "no"
+    x-ddev:
+      describe-url-port: 'Launch: ddev xhgui'
 networks:
   ddev_default:
     name: ddev_default

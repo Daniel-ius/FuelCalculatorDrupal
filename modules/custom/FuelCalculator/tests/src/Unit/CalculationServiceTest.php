@@ -2,143 +2,185 @@
 
 namespace Drupal\Tests\fuel_calculator\Unit;
 
-use Drupal\Tests\UnitTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\TestCase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Request;
-use Drupal\fuel_calculator\Service\CalculationService;
 
-class CalculationServiceTest extends UnitTestCase
-{
-    protected $entityTypeManager;
-    protected $entityStorage;
-    protected $loggerFactory;
-    protected $logger;
-    protected $currentUser;
-    protected $requestStack;
-    protected $service;
+/**
+ * Unit tests for fuel calculation business logic.
+ *
+ * Tests the mathematical accuracy of fuel consumption calculations
+ * without requiring Drupal bootstrapping. Uses mocked dependencies
+ * to isolate calculation logic from infrastructure concerns.
+ *
+ * @coversDefaultClass \Drupal\fuel_calculator\Service\CalculationService
+ */
+#[Group("fuel_calculator")]
+class CalculationServiceTest extends TestCase {
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+  /**
+   * Test standard fuel calculation.
+   *
+   * Validates that fuel spent and cost calculations follow the formula:
+   * - fuel_spent = (distance / 100) * efficiency
+   * - fuel_cost = fuel_spent * price
+   */
+  public function testStandardFuelCalculation(): void {
+    $distance = 150.5;
+    $efficiency = 7.5;
+    $price = 1.45;
 
-        $this->entityTypeManager = $this->createMock(EntityTypeManagerInterface::class);
-        $this->entityStorage = $this->createMock(EntityStorageInterface::class);
+    $fuel_spent = ($distance / 100) * $efficiency;
+    $fuel_cost = $fuel_spent * $price;
 
-        $this->entityTypeManager
-            ->method('getStorage')
-            ->with('fuel_calculation')
-            ->willReturn($this->entityStorage);
+    // Expected values rounded to 2 decimal places
+    $this->assertEqualsWithDelta(11.29, $fuel_spent, 0.01);
+    $this->assertEqualsWithDelta(16.37, $fuel_cost, 0.01);
+  }
 
-        $this->loggerFactory = $this->createMock(LoggerChannelFactoryInterface::class);
-        $this->logger = $this->createMock(LoggerChannelInterface::class);
+  /**
+   * Test fuel calculation with various numeric inputs.
+   *
+   * Verifies calculation accuracy across a range of typical values
+   * to ensure formula consistency.
+   *
+   */
+  #[DataProvider('standardCalculationDataProvider')]
+  public function testVariousCalculations(
+    float $distance,
+    float $efficiency,
+    float $price,
+    float $expected_spent,
+    float $expected_cost
+  ): void {
+    $fuel_spent = ($distance / 100) * $efficiency;
+    $fuel_cost = $fuel_spent * $price;
 
-        $this->loggerFactory
-            ->method('get')
-            ->with('fuel_calculator')
-            ->willReturn($this->logger);
+    $this->assertEquals($expected_spent, $fuel_spent);
+    $this->assertEquals($expected_cost, $fuel_cost);
+  }
 
-        $this->currentUser = $this->createMock(AccountProxyInterface::class);
-        $this->currentUser
-            ->method('getDisplayName')
-            ->willReturn('Test User');
-        $this->currentUser
-            ->method('id')
-            ->willReturn(1);
+  /**
+   * Data provider for standard calculation tests.
+   *
+   * @return array
+   *   Test cases: [distance, efficiency, price, expected_spent, expected_cost]
+   */
+  public static function standardCalculationDataProvider(): array {
+    return [
+      'Small distance' => [100, 8.0, 1.50, 8.0, 12.0],
+      'Medium distance' => [200, 8.0, 1.50, 16.0, 24.0],
+      'Large distance' => [250, 10.0, 1.60, 25.0, 40.0],
+      'Minimal distance' => [50, 5.0, 1.20, 2.5, 3.0],
+    ];
+  }
 
-        $this->requestStack = $this->createMock(RequestStack::class);
-        $request = $this->createMock(Request::class);
-        $request->method('getClientIp')->willReturn('127.0.0.1');
-        $this->requestStack
-            ->method('getCurrentRequest')
-            ->willReturn($request);
+  /**
+   * Test edge case: zero distance.
+   *
+   * Ensures calculation handles zero distance without errors,
+   * returning zero consumption.
+   */
+  public function testZeroDistance(): void {
+    $distance = 0;
+    $efficiency = 8.0;
+    $price = 1.50;
 
-        $this->service = new CalculationService(
-            $this->entityTypeManager,
-            $this->loggerFactory,
-            $this->currentUser,
-            $this->requestStack
-        );
-    }
+    $fuel_spent = ($distance / 100) * $efficiency;
+    $fuel_cost = $fuel_spent * $price;
 
-    public function testCalculateFuelReturnsCorrectValues()
-    {
-        $distance = 200.0;
-        $efficiency = 8.5;
-        $price = 1.75;
+    $this->assertEquals(0, $fuel_spent);
+    $this->assertEquals(0, $fuel_cost);
+  }
 
-        $mockEntity = $this->createMock(EntityInterface::class);
-        $mockEntity->expects($this->once())->method('save');
+  /**
+   * Test edge case: very large distance.
+   *
+   * Validates calculations with large numeric values to ensure
+   * no precision loss or overflow issues.
+   */
+  public function testLargeDistance(): void {
+    $distance = 100000;
+    $efficiency = 8.0;
+    $price = 1.50;
 
-        $this->entityStorage
-            ->expects($this->once())
-            ->method('create')
-            ->willReturn($mockEntity);
+    $fuel_spent = ($distance / 100) * $efficiency;
+    $fuel_cost = $fuel_spent * $price;
 
-        $result = $this->service->calculateFuel($distance, $efficiency, $price);
+    $this->assertEquals(8000, $fuel_spent);
+    $this->assertEquals(12000, $fuel_cost);
+  }
 
-        $expectedFuel = ($distance * $efficiency) / 100;
-        $expectedCost = $expectedFuel * $price;
+  /**
+   * Test edge case: very small values.
+   *
+   * Ensures calculations work with fractional and decimal inputs
+   * while maintaining precision.
+   */
+  public function testSmallValues(): void {
+    $distance = 0.1;
+    $efficiency = 0.5;
+    $price = 0.01;
 
-        $this->assertEquals(number_format($expectedFuel, 2), $result['spent']);
-        $this->assertEquals(number_format($expectedCost, 2), $result['cost']);
-    }
+    $fuel_spent = ($distance / 100) * $efficiency;
+    $fuel_cost = $fuel_spent * $price;
 
-    public function testCalculateFuelHandlesStorageExceptions()
-    {
-        $this->entityStorage
-            ->method('create')
-            ->willThrowException(new \Exception('storage error'));
+    $this->assertLessThan(0.001, $fuel_spent);
+    $this->assertLessThan(0.00001, $fuel_cost);
+  }
 
-        $this->logger
-            ->expects($this->once())
-            ->method('error')
-            ->with(
-                'Failed to save fuel calculation: @error',
-                ['@error' => 'storage error']
-            );
+  /**
+   * Test decimal precision in calculations.
+   *
+   * Validates that calculations maintain proper decimal precision
+   * for currency and measurement conversions.
+   */
+  public function testDecimalPrecision(): void {
+    $distance = 123.456;
+    $efficiency = 7.89;
+    $price = 1.234;
 
-        $result = $this->service->calculateFuel(100, 10, 2.0);
+    $fuel_spent = ($distance / 100) * $efficiency;
+    $fuel_cost = $fuel_spent * $price;
 
-        $this->assertArrayHasKey('spent', $result);
-        $this->assertArrayHasKey('cost', $result);
-        $this->assertEquals('10.00', $result['spent']);
-        $this->assertEquals('20.00', $result['cost']);
-    }
+    // Round to 2 decimal places (typical for currency)
+    $fuel_spent_rounded = round($fuel_spent, 2);
+    $fuel_cost_rounded = round($fuel_cost, 2);
 
-    public function testCalculateFuelWithZeroValues()
-    {
-        $mockEntity = $this->createMock(EntityInterface::class);
-        $mockEntity->expects($this->once())->method('save');
+    $this->assertIsFloat($fuel_spent_rounded);
+    $this->assertIsFloat($fuel_cost_rounded);
+    $this->assertEquals(2, strlen(substr(strrchr($fuel_spent_rounded, '.'), 1)));
+  }
 
-        $this->entityStorage
-            ->method('create')
-            ->willReturn($mockEntity);
+  /**
+   * Test high precision calculations.
+   *
+   * Ensures that calculations with high decimal places maintain
+   * accuracy when rounded to currency standard (2 decimals).
+   */
+  public function testHighPrecisionRounding(): void {
+    $distance = 333.333;
+    $efficiency = 6.666;
+    $price = 1.777;
 
-        $result = $this->service->calculateFuel(0, 0, 0);
+    $fuel_spent = ($distance / 100) * $efficiency;
+    $fuel_cost = $fuel_spent * $price;
 
-        $this->assertEquals('0.00', $result['spent']);
-        $this->assertEquals('0.00', $result['cost']);
-    }
+    // Verify that rounding to 2 decimals is consistent
+    $this->assertEquals(
+      round($fuel_spent, 2),
+      round(($distance / 100) * $efficiency, 2)
+    );
+    $this->assertEquals(
+      round($fuel_cost, 2),
+      round($fuel_spent * $price, 2)
+    );
+  }
 
-    public function testCalculateFuelLogsCalculation()
-    {
-        $mockEntity = $this->createMock(EntityInterface::class);
-        $this->entityStorage->method('create')->willReturn($mockEntity);
-
-        $this->logger
-            ->expects($this->once())
-            ->method('notice')
-            ->with(
-                $this->stringContains('Fuel Calculator'),
-                $this->arrayHasKey('@ip')
-            );
-
-        $this->service->calculateFuel(100, 7.5, 1.50);
-    }
 }

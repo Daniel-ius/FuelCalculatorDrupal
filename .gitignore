@@ -57,3 +57,4 @@
 /drupal.phar
 /drupal
 /modules/contrib/*
+/autoload.php

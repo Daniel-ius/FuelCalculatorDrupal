@@ -8,6 +8,7 @@ use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\views\EntityViewsData;
 
 #[ContentEntityType(
     id: "fuel_calculation",
@@ -22,7 +23,7 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
     handlers: [
     "view_builder" => "Drupal\Core\Entity\EntityViewBuilder",
     "list_builder" => "Drupal\Core\Entity\EntityListBuilder",
-    "views_data" => "Drupal\views\EntityViewsData",
+    "views_data" => EntityViewsData::class,
     "access" => "Drupal\Core\Entity\EntityAccessControlHandler",
     ],
     admin_permission: "administer fuel calculation entities",

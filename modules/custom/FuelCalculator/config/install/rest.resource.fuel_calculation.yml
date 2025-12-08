@@ -1,0 +1,13 @@
+id: fuel_calculation
+plugin_id: fuel_calculation
+granularity: resource
+methods:
+  - GET
+  - POST
+  - PATCH
+  - DELETE
+formats:
+  - json
+authentication:
+  - cookie
+configuration: {}

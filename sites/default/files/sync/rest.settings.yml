@@ -1,0 +1,43 @@
+_core:
+  default_config_hash: CyDv0WDnTXXhfh9yl0CVbi6uqMbGR11ivLu_RkEFdFc
+services:
+  version: v1
+  base_path: /api/v1
+  fuel_calculation_collection:
+    GET:
+      - json
+    POST:
+      - json
+  fuel_calculation_item:
+    GET:
+      - json
+    PATCH:
+      - json
+    DELETE:
+      - json
+  fuel_calculation_calculate:
+    POST:
+      - json
+auth:
+  - basic_auth
+  - cookie
+cors:
+  allowedOrigins:
+    - '*'
+  allowedMethods:
+    - GET
+    - POST
+    - PATCH
+    - DELETE
+    - OPTIONS
+  allowedHeaders:
+    - '*'
+  exposedHeaders:
+    - X-RateLimit-Limit
+    - X-RateLimit-Remaining
+    - X-RateLimit-Reset
+  supportsCredentials: true
+  maxAge: 3600
+rate_limit:
+  enabled: false
+  requests_per_minute: 60

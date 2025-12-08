@@ -104,7 +104,8 @@ class CalculationService
 
 
         $this->logger->notice(
-            'Fuel Calculator: IP: @ip, User: @user, Distance: @distance km, Consumption: @consumption L/100km, Price: @price, Fuel: @fuel L, Cost: @cost',
+            'Fuel Calculator: IP: @ip, User: @user, Distance: @distance km,
+             Consumption: @consumption L/100km, Price: @price, Fuel: @fuel L, Cost: @cost',
             [
                 '@ip' => $client_ip,
                 '@user' => $this->currentUser->getDisplayName(),

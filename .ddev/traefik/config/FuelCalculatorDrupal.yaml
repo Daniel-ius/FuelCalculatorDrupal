@@ -25,22 +25,22 @@ http:
       tls: false
       # middlewares:
       #   - "FuelCalculatorDrupal-redirectHttps"
-    FuelCalculatorDrupal-web-80-http:
-      entrypoints:
-        - http-33001
-      rule: HostRegexp(`^fuelcalculatordrupal\.ddev\.site$`)
-      
-      service: "FuelCalculatorDrupal-web-80"
-      ruleSyntax: v3
-      tls: false
-      # middlewares:
-      #   - "FuelCalculatorDrupal-redirectHttps"
     FuelCalculatorDrupal-web-8025-http:
       entrypoints:
         - http-8025
       rule: HostRegexp(`^fuelcalculatordrupal\.ddev\.site$`)
       
       service: "FuelCalculatorDrupal-web-8025"
+      ruleSyntax: v3
+      tls: false
+      # middlewares:
+      #   - "FuelCalculatorDrupal-redirectHttps"
+    FuelCalculatorDrupal-web-80-http:
+      entrypoints:
+        - http-33000
+      rule: HostRegexp(`^fuelcalculatordrupal\.ddev\.site$`)
+      
+      service: "FuelCalculatorDrupal-web-80"
       ruleSyntax: v3
       tls: false
       # middlewares:
@@ -70,22 +70,22 @@ http:
       
     
     
-    FuelCalculatorDrupal-web-80-https:
-      entrypoints:
-        - http-443
-      rule: HostRegexp(`^fuelcalculatordrupal\.ddev\.site$`)
-      
-      service: "FuelCalculatorDrupal-web-80"
-      ruleSyntax: v3
-      
-      tls: true
-      
     FuelCalculatorDrupal-web-8025-https:
       entrypoints:
         - http-8026
       rule: HostRegexp(`^fuelcalculatordrupal\.ddev\.site$`)
       
       service: "FuelCalculatorDrupal-web-8025"
+      ruleSyntax: v3
+      
+      tls: true
+      
+    FuelCalculatorDrupal-web-80-https:
+      entrypoints:
+        - http-443
+      rule: HostRegexp(`^fuelcalculatordrupal\.ddev\.site$`)
+      
+      service: "FuelCalculatorDrupal-web-80"
       ruleSyntax: v3
       
       tls: true
@@ -111,15 +111,15 @@ http:
           - url: http://ddev-FuelCalculatorDrupal-phpmyadmin:80
         
     
-    FuelCalculatorDrupal-web-80:
-      loadbalancer:
-        servers:
-          - url: http://ddev-FuelCalculatorDrupal-web:80
-        
     FuelCalculatorDrupal-web-8025:
       loadbalancer:
         servers:
           - url: http://ddev-FuelCalculatorDrupal-web:8025
+        
+    FuelCalculatorDrupal-web-80:
+      loadbalancer:
+        servers:
+          - url: http://ddev-FuelCalculatorDrupal-web:80
         
     
     

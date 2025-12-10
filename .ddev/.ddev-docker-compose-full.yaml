@@ -15,7 +15,7 @@ services:
     container_name: ddev-FuelCalculatorDrupal-db
     environment:
       BITNAMI_VOLUME_DIR: ""
-      COLUMNS: "235"
+      COLUMNS: "228"
       DDEV_DATABASE: mariadb:10.11
       DDEV_DATABASE_FAMILY: mysql
       DDEV_GID: "1000"
@@ -39,7 +39,7 @@ services:
       DOCKER_IP: 127.0.0.1
       HOST_DOCKER_INTERNAL_IP: ""
       IS_DDEV_PROJECT: "true"
-      LINES: "10"
+      LINES: "18"
       MYSQL_HISTFILE: /mnt/ddev-global-cache/mysqlhistory/FuelCalculatorDrupal-db/mysql_history
       PGDATABASE: db
       PGHOST: 127.0.0.1
@@ -165,7 +165,7 @@ services:
       - /pre-start.sh
     container_name: ddev-FuelCalculatorDrupal-web
     environment:
-      COLUMNS: "235"
+      COLUMNS: "228"
       COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
       COREPACK_HOME: /mnt/ddev-global-cache/corepack
       DDEV_APPROOT: /var/www/html
@@ -206,7 +206,7 @@ services:
       HTTP_EXPOSE: 8025:8025,33000:80
       HTTPS_EXPOSE: 8026:8025,443:80
       IS_DDEV_PROJECT: "true"
-      LINES: "10"
+      LINES: "18"
       MYSQL_HISTFILE: /mnt/ddev-global-cache/mysqlhistory/FuelCalculatorDrupal-web/mysql_history
       NODE_EXTRA_CA_CERTS: /mnt/ddev-global-cache/mkcert/rootCA.pem
       PGDATABASE: db

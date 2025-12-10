@@ -16,6 +16,7 @@
     ],
     "require": {
         "composer/installers": "^2.0",
+        "drupal/coder": "^9.0@alpha",
         "drupal/core-composer-scaffold": "^11.0",
         "drupal/core-project-message": "^11.0",
         "drupal/core-recommended": "^11.0",
@@ -106,6 +107,10 @@
                 "      composer remove drupal/core-project-message"
             ]
         }
+    },
+    "scripts": {
+        "cs-check": "phpcs",
+        "cs-fix": "phpcbf"
     },
     "require-dev": {
         "behat/mink": "^1.13",

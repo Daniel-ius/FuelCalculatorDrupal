@@ -5,16 +5,6 @@
 
 http:
   routers:
-    FuelCalculatorDrupal-xhgui-80-http:
-      entrypoints:
-        - http-8143
-      rule: HostRegexp(`^fuelcalculatordrupal\.ddev\.site$`)
-      
-      service: "FuelCalculatorDrupal-xhgui-80"
-      ruleSyntax: v3
-      tls: false
-      # middlewares:
-      #   - "FuelCalculatorDrupal-redirectHttps"
     FuelCalculatorDrupal-phpmyadmin-80-http:
       entrypoints:
         - http-8036
@@ -45,18 +35,17 @@ http:
       tls: false
       # middlewares:
       #   - "FuelCalculatorDrupal-redirectHttps"
-    
-    
-    FuelCalculatorDrupal-xhgui-80-https:
+    FuelCalculatorDrupal-xhgui-80-http:
       entrypoints:
-        - http-8142
+        - http-8143
       rule: HostRegexp(`^fuelcalculatordrupal\.ddev\.site$`)
       
       service: "FuelCalculatorDrupal-xhgui-80"
       ruleSyntax: v3
-      
-      tls: true
-      
+      tls: false
+      # middlewares:
+      #   - "FuelCalculatorDrupal-redirectHttps"
+    
     
     FuelCalculatorDrupal-phpmyadmin-80-https:
       entrypoints:
@@ -91,6 +80,17 @@ http:
       tls: true
       
     
+    FuelCalculatorDrupal-xhgui-80-https:
+      entrypoints:
+        - http-8142
+      rule: HostRegexp(`^fuelcalculatordrupal\.ddev\.site$`)
+      
+      service: "FuelCalculatorDrupal-xhgui-80"
+      ruleSyntax: v3
+      
+      tls: true
+      
+    
 
   middlewares:
     FuelCalculatorDrupal-redirectHttps:
@@ -99,12 +99,6 @@ http:
         permanent: true
 
   services:
-    FuelCalculatorDrupal-xhgui-80:
-      loadbalancer:
-        servers:
-          - url: http://ddev-FuelCalculatorDrupal-xhgui:80
-        
-    
     FuelCalculatorDrupal-phpmyadmin-80:
       loadbalancer:
         servers:
@@ -122,6 +116,12 @@ http:
           - url: http://ddev-FuelCalculatorDrupal-web:80
         
     
+    
+    FuelCalculatorDrupal-xhgui-80:
+      loadbalancer:
+        servers:
+          - url: http://ddev-FuelCalculatorDrupal-xhgui:80
+        
     
     
 

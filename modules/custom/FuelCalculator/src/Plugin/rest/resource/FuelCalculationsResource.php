@@ -7,7 +7,6 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\rest\Plugin\ResourceBase;
 use Drupal\rest\ResourceResponse;
-use Exception;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Psr\Log\LoggerInterface;
@@ -25,21 +24,20 @@ use Psr\Log\LoggerInterface;
  *   methods = {"GET", "POST"}
  * )
  */
-class FuelCalculationsResource extends ResourceBase
-{
+class FuelCalculationsResource extends ResourceBase {
   /**
    * The entity type manager.
    *
-   * @var EntityTypeManagerInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-    protected EntityTypeManagerInterface $entityTypeManager;
+  protected EntityTypeManagerInterface $entityTypeManager;
 
   /**
    * The current user.
    *
-   * @var AccountProxyInterface
+   * @var \Drupal\Core\Session\AccountProxyInterface
    */
-    protected AccountProxyInterface $currentUser;
+  protected AccountProxyInterface $currentUser;
 
   /**
    * Constructs a FuelCalculationsResource object.
@@ -52,81 +50,80 @@ class FuelCalculationsResource extends ResourceBase
    *   The plugin implementation definition.
    * @param array $serializer_formats
    *   The available serialization formats.
-   * @param LoggerInterface $logger
+   * @param \Psr\Log\LoggerInterface $logger
    *   A logger instance.
-   * @param EntityTypeManagerInterface $entity_type_manager
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
-   * @param AccountProxyInterface $current_user
+   * @param \Drupal\Core\Session\AccountProxyInterface $current_user
    *   The current user.
    */
-    public function __construct(
-        array $configuration,
-        $plugin_id,
-        $plugin_definition,
-        array $serializer_formats,
-        LoggerInterface $logger,
-        EntityTypeManagerInterface $entity_type_manager,
-        AccountProxyInterface $current_user
-    ) {
-        parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer_formats, $logger);
-        $this->entityTypeManager = $entity_type_manager;
-        $this->currentUser = $current_user;
-    }
+  public function __construct(
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+    array $serializer_formats,
+    LoggerInterface $logger,
+    EntityTypeManagerInterface $entity_type_manager,
+    AccountProxyInterface $current_user,
+  ) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer_formats, $logger);
+    $this->entityTypeManager = $entity_type_manager;
+    $this->currentUser = $current_user;
+  }
 
   /**
    * {@inheritdoc}
    */
-    public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition): FuelCalculationsResource|ResourceBase|ContainerFactoryPluginInterface|static
-    {
-        return new static(
-            $configuration,
-            $plugin_id,
-            $plugin_definition,
-            $container->getParameter('serializer.formats'),
-            $container->get('logger.factory')->get('fuel_calculator'),
-            $container->get('entity_type.manager'),
-            $container->get('current_user')
-        );
-    }
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition): FuelCalculationsResource|ResourceBase|ContainerFactoryPluginInterface|static {
+    return new static(
+          $configuration,
+          $plugin_id,
+          $plugin_definition,
+          $container->getParameter('serializer.formats'),
+          $container->get('logger.factory')->get('fuel_calculator'),
+          $container->get('entity_type.manager'),
+          $container->get('current_user')
+      );
+  }
 
   /**
    * Responds to GET requests.
    *
-   * @return ResourceResponse
+   * @return \Drupal\rest\ResourceResponse
    *   The response containing fuel calculations.
    */
-    public function get(): ResourceResponse
-    {
-        if (!$this->currentUser->hasPermission('access fuel calculator api')) {
-            throw new BadRequestHttpException('You do not have permission to access this resource.');
-        }
-
-        try {
-            $storage = $this->entityTypeManager->getStorage('fuel_calculation');
-            $calculations = $storage->loadMultiple();
-
-            $data = [];
-            foreach ($calculations as $calculation) {
-                $data[] = [
-                'id' => $calculation->id(),
-                'uuid' => $calculation->uuid(),
-                'distance' => (float) $calculation->getDistance(),
-                'efficiency' => (float) $calculation->getEfficiency(),
-                'price' => (float) $calculation->getPrice(),
-                'fuel_spent' => (float) $calculation->getFuelSpent(),
-                'fuel_cost' => (float) $calculation->getFuelCost(),
-                'user_id' => $calculation->get('user_id')->target_id,
-                'ip_address' => $calculation->getIpAddress(),
-                'created' => $calculation->getCreatedTime(),
-                ];
-            }
-
-            return new ResourceResponse($data);
-        } catch (Exception $e) {
-            $this->logger->error('Error fetching fuel calculations: @message', ['@message' => $e->getMessage()]);
-            throw new BadRequestHttpException('Error fetching fuel calculations.');
-        }
+  public function get(): ResourceResponse {
+    if (!$this->currentUser->hasPermission('access fuel calculator api')) {
+      throw new BadRequestHttpException('You do not have permission to access this resource.');
     }
+
+    try {
+      $storage = $this->entityTypeManager->getStorage('fuel_calculation');
+      $calculations = $storage->loadMultiple();
+
+      $data = [];
+      foreach ($calculations as $calculation) {
+        $data[] = [
+          'id' => $calculation->id(),
+          'uuid' => $calculation->uuid(),
+          'distance' => (float) $calculation->getDistance(),
+          'efficiency' => (float) $calculation->getEfficiency(),
+          'price' => (float) $calculation->getPrice(),
+          'fuel_spent' => (float) $calculation->getFuelSpent(),
+          'fuel_cost' => (float) $calculation->getFuelCost(),
+          'user_id' => $calculation->get('user_id')->target_id,
+          'ip_address' => $calculation->getIpAddress(),
+          'created' => $calculation->getCreatedTime(),
+        ];
+      }
+
+      return new ResourceResponse($data);
+    }
+    catch (\Exception $e) {
+      $this->logger->error('Error fetching fuel calculations: @message', ['@message' => $e->getMessage()]);
+      throw new BadRequestHttpException('Error fetching fuel calculations.');
+    }
+  }
 
   /**
    * Responds to POST requests.
@@ -134,64 +131,65 @@ class FuelCalculationsResource extends ResourceBase
    * @param array $data
    *   The request payload.
    *
-   * @return ResourceResponse
+   * @return \Drupal\rest\ResourceResponse
    *   The created fuel calculation response.
    */
-    public function post(array $data): ResourceResponse
-    {
-        if (!$this->currentUser->hasPermission('create fuel calculation entities')) {
-            throw new BadRequestHttpException('You do not have permission to create fuel calculations.');
-        }
-
-        $required_fields = ['distance', 'efficiency', 'price'];
-        foreach ($required_fields as $field) {
-            if (!isset($data[$field])) {
-                throw new BadRequestHttpException("Missing required field: $field");
-            }
-        }
-
-        try {
-            $distance = (float) $data['distance'];
-            $efficiency = (float) $data['efficiency'];
-            $price = (float) $data['price'];
-
-            if ($distance <= 0 || $efficiency <= 0 || $price < 0) {
-                throw new BadRequestHttpException('
-                Distance and efficiency must be positive, price must be non-negative.');
-            }
-
-            $fuel_spent = ($distance / 100) * $efficiency;
-            $fuel_cost = $fuel_spent * $price;
-
-            $calculation = $this->entityTypeManager->getStorage('fuel_calculation')->create([
-            'distance' => $distance,
-            'efficiency' => $efficiency,
-            'price' => $price,
-            'fuel_spent' => $fuel_spent,
-            'fuel_cost' => $fuel_cost,
-            'user_id' => $this->currentUser->id(),
-            'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
-            ]);
-
-            $calculation->save();
-
-            $response_data = [
-            'id' => $calculation->id(),
-            'uuid' => $calculation->uuid(),
-            'distance' => (float) $calculation->getDistance(),
-            'efficiency' => (float) $calculation->getEfficiency(),
-            'price' => (float) $calculation->getPrice(),
-            'fuel_spent' => (float) $calculation->getFuelSpent(),
-            'fuel_cost' => (float) $calculation->getFuelCost(),
-            'user_id' => $calculation->get('user_id')->target_id,
-            'ip_address' => $calculation->getIpAddress(),
-            'created' => $calculation->getCreatedTime(),
-            ];
-
-            return new ResourceResponse($response_data, 201);
-        } catch (Exception $e) {
-            $this->logger->error('Error creating fuel calculation: @message', ['@message' => $e->getMessage()]);
-            throw new BadRequestHttpException('Error creating fuel calculation: ' . $e->getMessage());
-        }
+  public function post(array $data): ResourceResponse {
+    if (!$this->currentUser->hasPermission('create fuel calculation entities')) {
+      throw new BadRequestHttpException('You do not have permission to create fuel calculations.');
     }
+
+    $required_fields = ['distance', 'efficiency', 'price'];
+    foreach ($required_fields as $field) {
+      if (!isset($data[$field])) {
+        throw new BadRequestHttpException("Missing required field: $field");
+      }
+    }
+
+    try {
+      $distance = (float) $data['distance'];
+      $efficiency = (float) $data['efficiency'];
+      $price = (float) $data['price'];
+
+      if ($distance <= 0 || $efficiency <= 0 || $price < 0) {
+        throw new BadRequestHttpException('
+                Distance and efficiency must be positive, price must be non-negative.');
+      }
+
+      $fuel_spent = ($distance / 100) * $efficiency;
+      $fuel_cost = $fuel_spent * $price;
+
+      $calculation = $this->entityTypeManager->getStorage('fuel_calculation')->create([
+        'distance' => $distance,
+        'efficiency' => $efficiency,
+        'price' => $price,
+        'fuel_spent' => $fuel_spent,
+        'fuel_cost' => $fuel_cost,
+        'user_id' => $this->currentUser->id(),
+        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? NULL,
+      ]);
+
+      $calculation->save();
+
+      $response_data = [
+        'id' => $calculation->id(),
+        'uuid' => $calculation->uuid(),
+        'distance' => (float) $calculation->getDistance(),
+        'efficiency' => (float) $calculation->getEfficiency(),
+        'price' => (float) $calculation->getPrice(),
+        'fuel_spent' => (float) $calculation->getFuelSpent(),
+        'fuel_cost' => (float) $calculation->getFuelCost(),
+        'user_id' => $calculation->get('user_id')->target_id,
+        'ip_address' => $calculation->getIpAddress(),
+        'created' => $calculation->getCreatedTime(),
+      ];
+
+      return new ResourceResponse($response_data, 201);
+    }
+    catch (\Exception $e) {
+      $this->logger->error('Error creating fuel calculation: @message', ['@message' => $e->getMessage()]);
+      throw new BadRequestHttpException('Error creating fuel calculation: ' . $e->getMessage());
+    }
+  }
+
 }

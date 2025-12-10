@@ -58,3 +58,4 @@
 /drupal
 /modules/contrib/*
 /autoload.php
+.idea

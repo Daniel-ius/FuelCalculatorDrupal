@@ -41,3 +41,9 @@ cors:
 rate_limit:
   enabled: false
   requests_per_minute: 60
+bc_entity:
+  fuel_calculation:
+    POST:
+      json:
+        basic_auth:
+          enabled: 'true'

@@ -28,25 +28,12 @@ Go to **People → Permissions** and assign:
 - `edit fuel calculation entities` - Edit calculations
 - `delete fuel calculation entities` - Delete calculations
 
-### Enable REST Endpoints
-
-- drush config:set rest.settings bc_entity.fuel_calculation.GET.json.basic_auth.enabled true -y
-- drush config:set rest.settings bc_entity.fuel_calculation.POST.json.basic_auth.enabled true -y
-- drush cr
-
-
 ## API Reference
 
 ### List all calculations
 
 GET /api/v1/fuel-calculations?_format=json
 Authorization: Basic {base64(username:password)}
-
-### Get single calculation
-
-GET /api/v1/fuel-calculations/{id}?_format=json
-Authorization: Basic {base64(username:password)}
-
 
 ### Create calculation
 
@@ -75,31 +62,6 @@ Authorization: Basic {base64(username:password)}
 "created": 1733832000
 }
 
-
-### Update calculation
-
-PATCH /api/v1/fuel-calculations/{id}?_format=json
-Content-Type: application/json
-Authorization: Basic {base64(username:password)}
-
-{
-"price": 1.60
-}
-
-
-### Delete calculation
-
-DELETE /api/v1/fuel-calculations/{id}?_format=json
-Authorization: Basic {base64(username:password)}
-
-
-**Response (200 OK):**
-
-{
-"message": "Deleted"
-}
-
-
 ## Usage
 
 ### Web Interface
@@ -125,29 +87,3 @@ Results:
 ### View History
 
 Navigate to `/fuel-calculation-history` to see all calculations with date filters.
-
-### cURL Examples
-
-**Create calculation:**
-
-curl -X POST "https://example.com/api/v1/fuel-calculations?_format=json"
--H "Content-Type: application/json"
--H "Authorization: Basic $(echo -n 'user:pass' | base64)"
--d '{
-"distance": 200,
-"efficiency": 8.0,
-"price": 1.50
-}'
-
-**Get all calculations:**
-
-curl -X GET "https://example.com/api/v1/fuel-calculations?_format=json"
--H "Authorization: Basic $(echo -n 'user:pass' | base64)"
-
-
-**Update calculation:**
-
-curl -X PATCH "https://example.com/api/v1/fuel-calculations/1?_format=json"
--H "Content-Type: application/json"
--H "Authorization: Basic $(echo -n 'user:pass' | base64)"
--d '{"price": 1.65}'

@@ -1,0 +1,21 @@
+uuid: 35d027e4-7015-4a74-a152-3ea8f35ee1ed
+langcode: en
+status: true
+dependencies:
+  module:
+    - basic_auth
+    - fuel_calculator
+    - serialization
+    - user
+id: fuel_calculations
+plugin_id: fuel_calculations
+granularity: resource
+configuration:
+  methods:
+    - GET
+    - POST
+  formats:
+    - json
+  authentication:
+    - basic_auth
+    - cookie

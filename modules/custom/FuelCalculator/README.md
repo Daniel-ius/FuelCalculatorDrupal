@@ -83,7 +83,14 @@ Results:
 → Fuel Spent: 11.29 L
 → Total Cost: 16.37 €
 
+### Url Parameters
+
+/fuel-calculator?distance=250&efficiency=7.5&price=1.45
+
+distance
+efficiency
+price
 
 ### View History
 
-Navigate to `/fuel-calculation-history` to see all calculations with date filters.
+Navigate to `/fuel-calculator/history` to see all calculations with date filters.

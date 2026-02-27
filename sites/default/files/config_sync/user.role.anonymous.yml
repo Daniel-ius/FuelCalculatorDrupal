@@ -8,6 +8,7 @@ dependencies:
     - comment
     - contact
     - filter
+    - fuel_calculator
     - search
     - system
 _core:
@@ -19,6 +20,12 @@ is_admin: false
 permissions:
   - 'access comments'
   - 'access content'
+  - 'access fuel calculator'
+  - 'access fuel calculator api'
   - 'access site-wide contact form'
+  - 'administer fuel calculator'
+  - 'create fuel calculation entities'
+  - 'delete fuel calculation entities'
+  - 'edit fuel calculation entities'
   - 'search content'
   - 'use text format restricted_html'

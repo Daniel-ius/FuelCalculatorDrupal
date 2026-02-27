@@ -2,6 +2,7 @@
 
 namespace Drupal\fuel_calculator\Service;
 
+use Psr\Log\LoggerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Session\AccountProxyInterface;
@@ -16,7 +17,7 @@ class CalculationService {
    *
    * @var \Drupal\Core\Logger\LoggerChannelFactoryInterface
    */
-  protected LoggerChannelFactoryInterface $logger;
+  protected LoggerInterface $logger;
 
   /**
    * The current user.

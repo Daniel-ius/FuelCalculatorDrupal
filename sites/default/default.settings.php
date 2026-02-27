@@ -256,7 +256,7 @@ $databases = [];
  * directory in the public files path. The setting below allows you to set
  * its location.
  */
-# $settings['config_sync_directory'] = '/directory/outside/webroot';
+$settings['config_sync_directory'] = 'sites/default/files/config_sync';
 
 /**
  * Settings:
@@ -602,6 +602,18 @@ $settings['update_free_access'] = FALSE;
 # $settings['file_temp_path'] = '/tmp';
 
 /**
+ * Automatically create an Apache HTTP .htaccess file in writable directories.
+ *
+ * This setting can be disabled if you are not using Apache HTTP server, or if
+ * you have a web server configuration that protects the various writable file
+ * directories.
+ *
+ * @see \Drupal\Component\FileSecurity\FileSecurity::writeHtaccess()
+ * @see https://www.drupal.org/docs/administering-a-drupal-site/security-in-drupal/securing-file-permissions-and-ownership
+ */
+# $settings['auto_create_htaccess'] = FALSE;
+
+/**
  * Session write interval:
  *
  * Set the minimum interval between each session write to database.
@@ -623,7 +635,7 @@ $settings['update_free_access'] = FALSE;
  */
 # $settings['locale_custom_strings_en'][''] = [
 #   'Home' => 'Front page',
-#   '@count min' => '@count minutes',
+#   'Last run @time ago' => 'Last run was done @time ago',
 # ];
 
 /**

@@ -1,13 +1,23 @@
 access fuel calculator:
   title: 'Access Fuel Calculator page'
   description: 'Allow users to access the fuel calculator form'
-  restrict: FALSE
 
 administer fuel calculator:
   title: 'Administer Fuel Calculator settings'
   description: 'Allow users to configure Fuel Calculator settings'
-  restrict: TRUE
 
 access fuel calculator api:
   title: 'Access Fuel Calculator API'
-  description: 'Allow users to access the fuel calculator REST API.'
+  description: 'Allow access to the Fuel Calculator REST API'
+
+create fuel calculation entities:
+  title: 'Create Fuel Calculation entities'
+  description: 'Allow creation of new fuel calculations via API'
+
+edit fuel calculation entities:
+  title: 'Edit Fuel Calculation entities'
+  description: 'Allow editing of fuel calculations via API'
+
+delete fuel calculation entities:
+  title: 'Delete Fuel Calculation entities'
+  description: 'Allow deletion of fuel calculations via API'

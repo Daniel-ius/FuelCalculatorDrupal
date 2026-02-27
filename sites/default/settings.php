@@ -258,7 +258,7 @@ $databases = [];
  * directory in the public files path. The setting below allows you to set
  * its location.
  */
-  $settings['config_sync_directory'] = '/config/sync';
+  $settings['config_sync_directory'] = 'sites/default/files/config_sync';
 
 /**
  * Settings:
@@ -288,7 +288,7 @@ $databases = [];
  *   $settings['hash_salt'] = file_get_contents('/home/example/salt.txt');
  * @endcode
  */
-$settings['hash_salt'] = '';
+$settings['hash_salt'] = 'b_JG6aSrWIYHAxsYTfh4dJgw2WM-Fmb8k8PkAbP6glIi5e6YmM8cPW_5DCtQgH5c_7FjSjnRPw';
 
 /**
  * Deployment identifier.
@@ -901,3 +901,15 @@ $config['system.logging']['error_level'] = 'verbose';
 error_reporting(E_ALL);
 ini_set('display_errors', TRUE);
 ini_set('display_startup_errors', TRUE);
+$databases['default']['default'] = array (
+  'database' => 'fuelcalc',
+  'username' => 'fuelcalc',
+  'password' => 'fuelcalc',
+  'prefix' => '',
+  'host' => 'db',
+  'port' => '3306',
+  'isolation_level' => 'READ COMMITTED',
+  'driver' => 'mysql',
+  'namespace' => 'Drupal\\mysql\\Driver\\Database\\mysql',
+  'autoload' => 'core/modules/mysql/src/Driver/Database/mysql/',
+);

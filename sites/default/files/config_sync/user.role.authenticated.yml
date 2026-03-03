@@ -9,6 +9,7 @@ dependencies:
     - contact
     - file
     - filter
+    - fuel_calculator
     - search
     - shortcut
     - system
@@ -21,6 +22,8 @@ is_admin: false
 permissions:
   - 'access comments'
   - 'access content'
+  - 'access fuel calculator'
+  - 'access fuel calculator api'
   - 'access shortcuts'
   - 'access site-wide contact form'
   - 'delete own files'

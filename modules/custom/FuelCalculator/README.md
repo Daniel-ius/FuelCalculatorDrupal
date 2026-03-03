@@ -99,3 +99,8 @@ price
 ### Settings for default values
 
 `/admin/config/system/fuel-calculator`
+
+
+### Run test in docker
+
+`docker exec -it fuelcalc-php vendor/bin/phpunit modules/custom/FuelCalculator/tests/src/Unit`

@@ -40,147 +40,155 @@ use Drupal\views\EntityViewsData;
       "plural" => new TranslatableMarkup("@count fuel calculations"),
     ],
 )]
-class FuelCalculation extends ContentEntityBase implements ContentEntityInterface {
-
+class FuelCalculation extends ContentEntityBase implements ContentEntityInterface
+{
   /**
    * {@inheritdoc}
    */
-  public static function baseFieldDefinitions(EntityTypeInterface $entity_type): array {
-    $fields = parent::baseFieldDefinitions($entity_type);
+    public static function baseFieldDefinitions(EntityTypeInterface $entity_type): array
+    {
+        $fields = parent::baseFieldDefinitions($entity_type);
 
-    $fields['distance'] = BaseFieldDefinition::create('decimal')
-      ->setLabel(t('Distance'))
-      ->setDescription(t('Distance in kilometers.'))
-      ->setSettings(
-              [
+        $fields['distance'] = BaseFieldDefinition::create('decimal')
+        ->setLabel(t('Distance'))
+        ->setDescription(t('Distance in kilometers.'))
+        ->setSettings(
+            [
                 'precision' => 10,
                 'scale' => 2,
               ]
-          )
-      ->setRequired(TRUE);
+        )
+        ->setRequired(true);
 
-    $fields['efficiency'] = BaseFieldDefinition::create('decimal')
-      ->setLabel(t('Fuel Efficiency'))
-      ->setDescription(t('Fuel efficiency in L/100km.'))
-      ->setSettings(
-              [
+        $fields['efficiency'] = BaseFieldDefinition::create('decimal')
+        ->setLabel(t('Fuel Efficiency'))
+        ->setDescription(t('Fuel efficiency in L/100km.'))
+        ->setSettings(
+            [
                 'precision' => 10,
                 'scale' => 2,
               ]
-          )
-      ->setRequired(TRUE);
+        )
+        ->setRequired(true);
 
-    $fields['price'] = BaseFieldDefinition::create('decimal')
-      ->setLabel(t('Fuel Price'))
-      ->setDescription(t('Fuel price per liter.'))
-      ->setSettings(
-              [
+        $fields['price'] = BaseFieldDefinition::create('decimal')
+        ->setLabel(t('Fuel Price'))
+        ->setDescription(t('Fuel price per liter.'))
+        ->setSettings(
+            [
                 'precision' => 10,
                 'scale' => 2,
               ]
-          )
-      ->setRequired(TRUE);
+        )
+        ->setRequired(true);
 
-    $fields['fuel_spent'] = BaseFieldDefinition::create('decimal')
-      ->setLabel(t('Fuel Spent'))
-      ->setDescription(t('Calculated fuel spent in liters.'))
-      ->setSettings(
-              [
+        $fields['fuel_spent'] = BaseFieldDefinition::create('decimal')
+        ->setLabel(t('Fuel Spent'))
+        ->setDescription(t('Calculated fuel spent in liters.'))
+        ->setSettings(
+            [
                 'precision' => 10,
                 'scale' => 2,
               ]
-          )
-      ->setRequired(TRUE);
+        )
+        ->setRequired(true);
 
-    $fields['fuel_cost'] = BaseFieldDefinition::create('decimal')
-      ->setLabel(t('Fuel Cost'))
-      ->setDescription(t('Calculated fuel cost.'))
-      ->setSettings(
-              [
+        $fields['fuel_cost'] = BaseFieldDefinition::create('decimal')
+        ->setLabel(t('Fuel Cost'))
+        ->setDescription(t('Calculated fuel cost.'))
+        ->setSettings(
+            [
                 'precision' => 10,
                 'scale' => 2,
               ]
-          )
-      ->setRequired(TRUE);
+        )
+        ->setRequired(true);
 
-    $fields['user_id'] = BaseFieldDefinition::create('entity_reference')
-      ->setLabel(t('User'))
-      ->setDescription(t('The user who performed the calculation.'))
-      ->setSetting('target_type', 'user')
-      ->setSetting('handler', 'default')
-      ->setDefaultValueCallback('Drupal\fuel_calculator\Entity\FuelCalculation::getCurrentUserId');
+        $fields['user_id'] = BaseFieldDefinition::create('entity_reference')
+        ->setLabel(t('User'))
+        ->setDescription(t('The user who performed the calculation.'))
+        ->setSetting('target_type', 'user')
+        ->setSetting('handler', 'default')
+        ->setDefaultValueCallback('Drupal\fuel_calculator\Entity\FuelCalculation::getCurrentUserId');
 
-    $fields['ip_address'] = BaseFieldDefinition::create('string')
-      ->setLabel(t('IP Address'))
-      ->setDescription(t('IP address of the user.'))
-      ->setSettings(
-              [
+        $fields['ip_address'] = BaseFieldDefinition::create('string')
+        ->setLabel(t('IP Address'))
+        ->setDescription(t('IP address of the user.'))
+        ->setSettings(
+            [
                 'max_length' => 45,
                 'text_processing' => 0,
               ]
-          );
+        );
 
-    $fields['created'] = BaseFieldDefinition::create('created')
-      ->setLabel(t('Created'))
-      ->setDescription(t('The time that the calculation was created.'));
+        $fields['created'] = BaseFieldDefinition::create('created')
+        ->setLabel(t('Created'))
+        ->setDescription(t('The time that the calculation was created.'));
 
-    return $fields;
-  }
+        return $fields;
+    }
 
   /**
    * Retrieves the current user's ID.
    */
-  public static function getCurrentUserId(): array {
-    return [\Drupal::currentUser()->id()];
-  }
+    public static function getCurrentUserId(): array
+    {
+        return [\Drupal::currentUser()->id()];
+    }
 
   /**
    * The distance value.
    */
-  public function getDistance(): float {
-    return $this->get('distance')->value;
-  }
+    public function getDistance(): float
+    {
+        return $this->get('distance')->value;
+    }
 
   /**
    * The efficiency value.
    */
-  public function getEfficiency(): float {
-    return $this->get('efficiency')->value;
-  }
+    public function getEfficiency(): float
+    {
+        return $this->get('efficiency')->value;
+    }
 
   /**
    * The price value.
    */
-  public function getPrice(): float {
-    return $this->get('price')->value;
-  }
+    public function getPrice(): float
+    {
+        return $this->get('price')->value;
+    }
 
   /**
    * The fuel spent value.
    */
-  public function getFuelSpent(): float {
-    return $this->get('fuel_spent')->value;
-  }
+    public function getFuelSpent(): float
+    {
+        return $this->get('fuel_spent')->value;
+    }
 
   /**
    * The fuel cost value.
    */
-  public function getFuelCost(): float {
-    return $this->get('fuel_cost')->value;
-  }
+    public function getFuelCost(): float
+    {
+        return $this->get('fuel_cost')->value;
+    }
 
   /**
    * The IP address.
    */
-  public function getIpAddress(): string {
-    return $this->get('ip_address')->value;
-  }
+    public function getIpAddress(): string
+    {
+        return $this->get('ip_address')->value;
+    }
 
   /**
    * The creation timestamp.
    */
-  public function getCreatedTime(): int {
-    return $this->get('created')->value;
-  }
-
+    public function getCreatedTime(): int
+    {
+        return $this->get('created')->value;
+    }
 }

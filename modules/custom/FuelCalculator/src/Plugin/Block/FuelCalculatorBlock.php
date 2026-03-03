@@ -12,13 +12,13 @@ use Drupal\Core\Block\BlockBase;
  *   admin_label = @Translation("Fuel Calculator Block")
  * )
  */
-class FuelCalculatorBlock extends BlockBase {
-
+class FuelCalculatorBlock extends BlockBase
+{
   /**
    * {@inheritdoc}
    */
-  public function build(): array {
-    return \Drupal::formBuilder()->getForm('Drupal\fuel_calculator\Form\FuelCalculatorForm');
-  }
-
+    public function build(): array
+    {
+        return \Drupal::formBuilder()->getForm('Drupal\fuel_calculator\Form\FuelCalculatorForm');
+    }
 }

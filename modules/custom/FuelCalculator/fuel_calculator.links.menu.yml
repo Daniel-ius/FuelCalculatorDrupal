@@ -1,0 +1,6 @@
+fuel_calculator.settings:
+  title: 'Fuel Calculator Settings'
+  description: 'Configure default distance, efficiency, and price for fuel calculations.'
+  parent: system.admin_config_system
+  route_name: fuel_calculator.settings
+  weight: 10

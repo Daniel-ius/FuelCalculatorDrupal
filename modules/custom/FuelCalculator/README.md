@@ -85,7 +85,7 @@ Results:
 
 ### Url Parameters
 
-/fuel-calculator?distance=250&efficiency=7.5&price=1.45
+`/fuel-calculator?distance=250&efficiency=7.5&price=1.45`
 
 distance
 efficiency
@@ -93,4 +93,9 @@ price
 
 ### View History
 
-Navigate to `/fuel-calculator/history` to see all calculations with date filters.
+`/fuel-calculator/history`
+
+
+### Settings for default values
+
+`/admin/config/system/fuel-calculator`

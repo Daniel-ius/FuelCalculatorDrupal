@@ -1,0 +1,21 @@
+uuid: 62656bd1-ad29-4322-a544-6bf9e14fb1d7
+langcode: en
+status: false
+dependencies:
+  module:
+    - basic_auth
+    - fuel_calculator
+    - serialization
+id: entity.fuel_calculation
+plugin_id: 'entity:fuel_calculation'
+granularity: resource
+configuration:
+  methods:
+    - GET
+    - POST
+    - DELETE
+    - PATCH
+  formats:
+    - json
+  authentication:
+    - basic_auth
